@@ -1,17 +1,17 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
-const {printTable} = require('console-table-printer');
+const { printTable } = require('console-table-printer');
 const figlet = require('figlet');
-let roles;
-let departments;
-let managers;
-let employees;
+let roles = [];
+let departments = [];
+let managers = [];
+let employees = [];
 
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "300473Op",
+  password: "password",
   database: "employees_db"
 });
 
@@ -19,12 +19,13 @@ figlet('Employee Tracker', (err, result) => {
   console.log(err || result);
 });
 
-connection.connect(function(err) {
+connection.connect(function (err) {
   if (err) throw err;
   start();
   getDepartments();
   getManagers();
   getEmployees();
+  getRoles();
 });
 
 start = () => {
@@ -35,20 +36,23 @@ start = () => {
       massage: "What would you like to do?",
       choices: ["ADD", "VIEW", "UPDATE", "DELETE", "EXIT"]
     })
-    .then (function(answer) {
+    .then(function (answer) {
       if (answer.choices === "ADD") {
         addSomething();
       }
-      else if (answer.choices === "UPDATE"){
+      else if (answer.choices === "UPDATE") {
         updateSomething();
       }
-      else if (answer.choices === "DELETE"){
+      else if (answer.choices === "VIEW") {
+        viewSomething();
+      }
+      else if (answer.choices === "DELETE") {
         deleteSomething();
       }
       else if (answer.choices === "EXIT") {
-        figlet('Thanks for using Employee Tracker', (err, result) => {
-          console.log(err || result);
-        });
+        // figlet('Thank you for using figlet ', (err, result) => {
+        //   console.log(err || result);
+        // });
         connection.end();
       }
       else {
@@ -70,13 +74,13 @@ getDepartments = () => {
   })
 };
 getManagers = () => {
-  connection.query("SELECT id, first_name, CONTACT_WS(' ', first_name, last_name) AS managers FROM employee", (err, res) => {
+  connection.query("SELECT id, first_name, CONCAT(first_name, ' ',  last_name) AS managers FROM employee", (err, res) => {
     if (err) throw err;
     managers = res;
   })
 };
 getEmployees = () => {
-  connection.query("SELECT id, CONCAT_WS(' ', first_name, last_name) AS Employee_Name FROM employee", (err, res) => {
+  connection.query("SELECT id, CONCAT(first_name,' ', last_name) AS Employee_Name FROM employee", (err, res) => {
     if (err) throw err;
     employees = res;
   })
@@ -90,7 +94,7 @@ addSomething = () => {
       message: "What would you like to add?",
       choices: ["DEPARTMENT", "ROLE", "EMPLOYEE", "EXIT"]
     }
-  ]).then(function(answer) {
+  ]).then(function (answer) {
     if (answer.add === "DEPARTMENT") {
       console.log("Add a new: " + answer.add);
       addDepartment();
@@ -108,7 +112,7 @@ addSomething = () => {
         console.log(err || result);
       })
       connection.end();
-    }else {
+    } else {
       connection.end();
     }
   })
@@ -121,7 +125,7 @@ addDepartment = () => {
       type: "input",
       message: "What department would you like to add?"
     }
-  ]).then(function(answer) {
+  ]).then(function (answer) {
     connection.query(`INSERT INTO department (name) VALUE ('${answer.department}')`, (err, res) => {
       if (err) throw err;
       console.log("1 new department added: " + answer.department);
@@ -153,13 +157,13 @@ addRole = () => {
       message: "What is the department for this possition?",
       choices: departmentOptions
     },
-  ]).then(function(answer) {
+  ]).then(function (answer) {
     for (i = 0; i < departmentOptions.length; i++) {
       if (departmentOptions[i].name === answer.department_id) {
         department_id = departmentOptions[i].id
       }
     }
-    connection.query(`INSTERT INTO role(title, salary, department_id) VALUES ('${answer.title}', '${answer.salary}', ${department_id})`, (err, res) => {
+    connection.query(`INSERT INTO role(title, salary, department_id) VALUES ('${answer.title}', '${answer.salary}', ${department_id})`, (err, res) => {
       if (err) throw err;
       console.log("1 new role added: " + answer.title);
       getRoles();
@@ -171,8 +175,12 @@ addRole = () => {
 addEmployee = () => {
   getRoles();
   getManagers();
+  let managerOptions = [];
   let roleOptions = [];
   for (i = 0; i < roles.length; i++) {
+    roleOptions.push(Object(roles[i]));
+  }
+  for (i = 0; i < managers.length; i++) {
     managerOptions.push(Object(managers[i]));
   }
   inquirer.prompt([
@@ -190,7 +198,7 @@ addEmployee = () => {
       name: "role_id",
       type: "list",
       message: "What is the role for this employee?",
-      choices: function() {
+      choices: function () {
         var choiceArray = [];
         for (var i = 0; i < roleOptions.length; i++) {
           choiceArray.push(roleOptions[i].title)
@@ -202,22 +210,22 @@ addEmployee = () => {
       name: "manager_id",
       type: "list",
       message: "Who is the employee's manager?",
-      choices: function() {
+      choices: function () {
         var choiceArray = [];
-        for (var i = 0; i < managerOptions.length; i ++) {
+        for (var i = 0; i < managerOptions.length; i++) {
           choiceArray.push(managerOptions[i].managers)
         }
         return choiceArray;
       }
     }
-  ]).then(function(answer) {
+  ]).then(function (answer) {
     for (i = 0; i < roleOptions.length; i++) {
       if (roleOptions[i].title === answer.role_id) {
         role_id = roleOptions[i].id
       }
     }
     for (i = 0; i < managerOptions.length; i++) {
-      if (managerOptions[i].managers === answer.mananer_id) {
+      if (managerOptions[i].managers === answer.manager_id) {
         manager_id = managerOptions[i].id
       }
     }
@@ -291,7 +299,7 @@ viewEmployees = () => {
     figlet('Employees', (err, result) => {
       console.log(err || result);
     });
-  
+
     printTable(res);
     start();
   });
@@ -312,7 +320,7 @@ updateSomething = () => {
     else if (answer.update === "Update employee managers") {
       updateEmployeeManager();
     }
-    else if(answer.update === "EXIT") {
+    else if (answer.update === "EXIT") {
       figlet('Thanks for using FSC Employee Tracker', (err, result) => {
         console.log(err || result);
       });
@@ -358,7 +366,7 @@ updateEmployeeRole = () => {
         name: "newRole",
         type: "list",
         message: "Select a new role:",
-        choices: function() {
+        choices: function () {
           var choiceArray = [];
           for (var i = 0; i < roleOptions.length; i++) {
             choiceArray.push(roleOptions[i].title)
@@ -367,22 +375,22 @@ updateEmployeeRole = () => {
         }
       }
     ]).then(answer => {
-for (i = 0; i < roleOptions.length; i++) {
-  if (answer.newRole === roleOptions[i].title) {
-    newChoice = roleOptions[i].id
-    connection.query(`UPDATE employee SET role_id = ${newChoice} WHERE id = ${employeeSelected}`), (err, res) => {
-      if (err) throw err;
-    };
-  }
-}
-console.log("Role updated succesfully");
-getEmployees();
-getRoles();
-start();
+      for (i = 0; i < roleOptions.length; i++) {
+        if (answer.newRole === roleOptions[i].title) {
+          newChoice = roleOptions[i].id
+          connection.query(`UPDATE employee SET role_id = ${newChoice} WHERE id = ${employeeSelected}`), (err, res) => {
+            if (err) throw err;
+          };
+        }
+      }
+      console.log("Role updated succesfully");
+      getEmployees();
+      getRoles();
+      start();
     })
   })
 };
-  
+
 
 updateEmployeeManager = () => {
   let employeeOptions = [];
@@ -420,7 +428,7 @@ updateEmployeeManager = () => {
         name: "newManager",
         type: "list",
         message: "Select a new manager:",
-        choices: function() {
+        choices: function () {
           var choiceArray = [];
           for (var i = 0; i < managerOptions.length; i++) {
             choiceArray.push(managerOptions[i].managers)
@@ -429,18 +437,18 @@ updateEmployeeManager = () => {
         }
       }
     ]).then(answer => {
-for (i = 0; i < managerOptions.length; i++) {
-  if (answer.newManager === managerOptions[i].managers) {
-    newChoice = managerOptions[i].id
-    connection.query(`UPDATE employee SET manager_id = ${newChoice} WHERE id = ${employeeSelected}`), (err, res) => {
-      if (err) throw err;
-    };
-    console.log("Manager Updated Succesfully");
-  }
-}
-getEmployees();
-getManagers();
-start();
+      for (i = 0; i < managerOptions.length; i++) {
+        if (answer.newManager === managerOptions[i].managers) {
+          newChoice = managerOptions[i].id
+          connection.query(`UPDATE employee SET manager_id = ${newChoice} WHERE id = ${employeeSelected}`), (err, res) => {
+            if (err) throw err;
+          };
+          console.log("Manager Updated Succesfully");
+        }
+      }
+      getEmployees();
+      getManagers();
+      start();
     })
   })
 };
@@ -462,14 +470,14 @@ deleteSomething = () => {
     }
     else if (answer.delete === "Delete employee") {
       deleteEmployee();
-    } else if(answer.delete === "EXIT") {
+    } else if (answer.delete === "EXIT") {
       figlet('Thanks for using FSC Employee Tracker', (err, result) => {
         console.log(err || result);
       });
 
       connection.end();
     }
-     else {
+    else {
       connection.end();
     }
   })
@@ -486,7 +494,7 @@ deleteDepartment = () => {
       name: "deleteDepartment",
       type: "list",
       message: "Select a department to delete",
-      choices: function() {
+      choices: function () {
         var choiceArray = [];
         for (var i = 0; i < departmentOptions.length; i++) {
           choiceArray.push(departmentOptions[i])
@@ -520,7 +528,7 @@ deleteRole = () => {
       name: "deleteRole",
       type: "list",
       message: "Select a role to delete",
-      choices: function() {
+      choices: function () {
         var choiceArray = [];
         for (var i = 0; i < roleOptions.length; i++) {
           choiceArray.push(roleOptions[i].title)
@@ -554,7 +562,7 @@ deleteEmployee = () => {
       name: "deleteEmployee",
       type: "list",
       message: "Select a employee to delete",
-      choices: function() {
+      choices: function () {
         var choiceArray = [];
         for (var i = 0; i < employeeOptions.length; i++) {
           choiceArray.push(employeeOptions[i].Employee_Name)
