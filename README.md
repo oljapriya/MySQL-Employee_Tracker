@@ -1,4 +1,4 @@
-# mysql, inquirer, console.table and node - EMPLOYEE TRACKER
+# EMPLOYEE TRACKER - mysql, inquirer, console.table and node
 
 ## Table of Contents
 - [Description](#Description)
@@ -12,12 +12,10 @@
 A node.js application that uses user input form inquirer to populate an employee tracker database displaying members of a company. To view full video => 
 [Video](https://drive.google.com/file/d/1CeJZLMt6jFI5jMMNg8hekiXFyndV79Qt/view)
 ## Screenshots
+Below is the gif showing the funcionality of the application:
 
- 
-https://user-images.githubusercontent.com/79331882/123102605-3e4a9e00-d403-11eb-8261-abb8337e92c7.mp4
+![Employee tracker](https://user-images.githubusercontent.com/79331882/123104030-933ae400-d404-11eb-9509-297fdb7ec655.gif)
 
-
-Below is the git showing the funcionality of the application:
 ![Screen Shot 2021-06-23 at 8 58 59 AM](https://user-images.githubusercontent.com/79331882/123102556-2ffc8200-d403-11eb-9864-627b4ea4422a.png)
 
 
