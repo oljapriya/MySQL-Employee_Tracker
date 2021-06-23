@@ -12,9 +12,13 @@
 A node.js application that uses user input form inquirer to populate an employee tracker database displaying members of a company. To view full video => 
 [Video](https://drive.google.com/file/d/1CeJZLMt6jFI5jMMNg8hekiXFyndV79Qt/view)
 ## Screenshots
-Below is the gif showing the funcionality of the application:
+Below is the video showing the funcionality of the application:
 
-![Untitled_ Jun 23, 2021 8_56 AM](https://user-images.githubusercontent.com/79331882/123105530-e2cddf80-d405-11eb-99a8-b83721a9ea61.gif)
+
+
+https://user-images.githubusercontent.com/79331882/123105683-fb3dfa00-d405-11eb-96da-ad0042fa9ede.mp4
+
+
 
 
 
