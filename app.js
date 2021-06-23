@@ -112,9 +112,9 @@ addSomething = () => {
       addEmployee();
     }
     else if (answer.add === "EXIT") {
-      figlet('Thanks for using Employeee Tracker', (err, result) => {
-        console.log(err || result);
-      })
+      // figlet('Thanks for using Employeee Tracker', (err, result) => {
+      //   console.log(err || result);
+      // })
       connection.end();
     } else {
       connection.end();
