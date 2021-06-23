@@ -14,8 +14,8 @@ A node.js application that uses user input form inquirer to populate an employee
 ## Screenshots
 Below is the gif showing the funcionality of the application:
 
+![Untitled_ Jun 23, 2021 8_56 AM](https://user-images.githubusercontent.com/79331882/123104708-2d9b2780-d405-11eb-9f13-ef1ddb5baff4.gif)
 
-https://user-images.githubusercontent.com/79331882/123104295-d1380800-d404-11eb-8aaf-c583e4544393.mp4
 
 
 
