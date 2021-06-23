@@ -1,11 +1,13 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const { printTable } = require('console-table-printer');
+const chalk = require('chalk');
 const figlet = require('figlet');
 let roles = [];
 let departments = [];
 let managers = [];
 let employees = [];
+
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -15,9 +17,11 @@ var connection = mysql.createConnection({
   database: "employees_db"
 });
 
-figlet('Employee Tracker', (err, result) => {
-  console.log(err || result);
-});
+// figlet('Employee Tracker', (err, result) => {
+//   console.log(err || result);
+  console.log (chalk.greenBright.bold(figlet.textSync('Employee Tracker')));
+  
+// });
 
 connection.connect(function (err) {
   if (err) throw err;
