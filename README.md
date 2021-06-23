@@ -14,7 +14,10 @@ A node.js application that uses user input form inquirer to populate an employee
 ## Screenshots
 Below is the gif showing the funcionality of the application:
 
-![Employee tracker](https://user-images.githubusercontent.com/79331882/123104030-933ae400-d404-11eb-9509-297fdb7ec655.gif)
+
+https://user-images.githubusercontent.com/79331882/123104295-d1380800-d404-11eb-8aaf-c583e4544393.mp4
+
+
 
 ![Screen Shot 2021-06-23 at 8 58 59 AM](https://user-images.githubusercontent.com/79331882/123102556-2ffc8200-d403-11eb-9864-627b4ea4422a.png)
 
